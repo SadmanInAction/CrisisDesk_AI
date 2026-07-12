@@ -1,6 +1,6 @@
-# CrisisDesk AI
+# ResQ AI
 
-CrisisDesk AI is an intelligent backend API for emergency and service request triage. It acts as an automated backend operator that receives citizen reports, uses advanced Artificial Intelligence to classify issues, assigns urgency, detects duplicates via text embeddings, and provides a full suite of admin APIs for management and analytics.
+ResQ AI is an intelligent backend API for emergency and service request triage. It acts as an automated backend operator that receives citizen reports, uses advanced Artificial Intelligence to classify issues, assigns urgency, detects duplicates via text embeddings, and provides a full suite of admin APIs for management and analytics.
 
 ---
 

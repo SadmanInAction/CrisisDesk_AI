@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Lock, Search, RefreshCw, Activity, AlertOctagon, CheckSquare } from 'lucide-react';
+import { Lock, RefreshCw, Activity, AlertOctagon, CheckSquare } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [apiKey, setApiKey] = useState(localStorage.getItem('adminKey') || '');

@@ -29,7 +29,7 @@ const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
-      title: 'CrisisDesk AI API',
+      title: 'ResQ AI API',
       version: '1.0.0',
       description: 'Emergency & Service Request Triage API',
     },

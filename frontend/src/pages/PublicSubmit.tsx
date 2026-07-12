@@ -33,30 +33,30 @@ export default function PublicSubmit() {
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto' }} className="animate-fade-in">
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Report an Emergency</h2>
-        <p style={{ color: 'var(--text-secondary)' }}>Our AI will automatically route your request to the proper authorities based on urgency.</p>
+        <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>জরুরী সহায়তা রিপোর্ট করুন<br/><span style={{ fontSize: '1.25rem', color: 'var(--text-secondary)' }}>(Report an Emergency)</span></h2>
+        <p style={{ color: 'var(--text-secondary)' }}>আপনার রিপোর্টটি এআই (AI) এর মাধ্যমে সরাসরি উদ্ধারকর্মীদের কাছে পৌঁছে যাবে।</p>
       </div>
 
       <form onSubmit={handleSubmit} className="glass" style={{ padding: '2rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Name (Optional)</label>
-        <input name="name" type="text" className="input-field" placeholder="John Doe" />
+        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>নাম / Name (Optional)</label>
+        <input name="name" type="text" className="input-field" placeholder="আপনার নাম" />
         
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Contact Info</label>
-        <input name="contact" type="text" className="input-field" placeholder="Phone or Email" />
+        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>যোগাযোগের নম্বর / Contact Number (Required)</label>
+        <input name="contact" type="text" className="input-field" required placeholder="017XXXXX..." />
 
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Location (Required)</label>
-        <input name="location" type="text" className="input-field" required placeholder="123 Main St, City" />
+        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>সঠিক লোকেশন / Exact Location (Required)</label>
+        <input name="location" type="text" className="input-field" required placeholder="হালিশহর, চট্টগ্রাম (Halisahar, CTG)" />
 
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Describe the Situation (Required)</label>
-        <textarea name="description" className="input-field" rows={4} required placeholder="What happened?" style={{ resize: 'vertical' }}></textarea>
+        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>বর্তমান অবস্থা / Describe Situation (Required)</label>
+        <textarea name="description" className="input-field" rows={4} required placeholder="পানির উচ্চতা কত? কতজন আটকে আছেন? (Water level? How many trapped?)" style={{ resize: 'vertical' }}></textarea>
 
-        <input type="hidden" name="language" value="en" />
+        <input type="hidden" name="language" value="bn" />
 
         <button type="submit" className="btn" style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', marginTop: '1rem' }} disabled={loading}>
           {loading ? (
-            'Processing with AI...'
+            'প্রসেস হচ্ছে... (Processing...)'
           ) : (
-            <>Submit Report <Send size={18} /></>
+            <>রিপোর্ট জমা দিন (Submit) <Send size={18} /></>
           )}
         </button>
       </form>
@@ -65,7 +65,7 @@ export default function PublicSubmit() {
         <div className="glass animate-fade-in" style={{ marginTop: '2rem', padding: '1.5rem', borderLeft: `4px solid var(--${result.urgency})` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
             {result.possibleDuplicate ? <AlertTriangle color="var(--medium)" /> : <CheckCircle2 color="var(--low)" />}
-            <h3 style={{ margin: 0 }}>Report Submitted Successfully</h3>
+            <h3 style={{ margin: 0 }}>রিপোর্ট সফলভাবে জমা হয়েছে (Submitted Successfully)</h3>
           </div>
           <div style={{ display: 'grid', gap: '1rem', color: 'var(--text-secondary)' }}>
             <p><strong>AI Summary:</strong> {result.summary}</p>
@@ -79,7 +79,7 @@ export default function PublicSubmit() {
             </div>
             {result.possibleDuplicate && (
               <p style={{ color: 'var(--medium)', fontSize: '0.875rem', margin: 0 }}>
-                ⚠️ Warning: A highly similar report was recently filed. This may be a duplicate.
+                ⚠️ Warning: A highly similar report was recently filed. Rescue teams may already be aware.
               </p>
             )}
           </div>
