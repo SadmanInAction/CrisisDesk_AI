@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const createReportSchema = z.object({
   name: z.string().optional(),
-  contact: z.string().optional(),
+  contact: z.string().regex(/^(?:\+88)?01[3-9]\d{8}$/, 'Must be a valid Bangladeshi number'),
   location: z.string().min(1, 'Location is required'),
   description: z.string().min(1, 'Description is required'),
   language: z.enum(['bn', 'en', 'unknown']).default('unknown'),

@@ -1,9 +1,11 @@
-import { useState } from 'react';
-import { Send, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Send, AlertTriangle, CheckCircle2, X } from 'lucide-react';
 
 export default function PublicSubmit() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [hasFile, setHasFile] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,7 +58,7 @@ export default function PublicSubmit() {
         <input name="name" type="text" className="input-field" placeholder="আপনার নাম" />
         
         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>যোগাযোগের নম্বর / Contact Number (Required)</label>
-        <input name="contact" type="text" className="input-field" required placeholder="017XXXXX..." />
+        <input name="contact" type="text" className="input-field" required pattern="(\+88)?01[3-9][0-9]{8}" title="Must be a valid 11-digit Bangladeshi number starting with 01 (e.g. 01712345678)" placeholder="017XXXXX..." />
 
         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>সঠিক লোকেশন / Exact Location (Required)</label>
         <input name="location" type="text" className="input-field" required placeholder="হালিশহর, চট্টগ্রাম (Halisahar, CTG)" />
@@ -65,7 +67,32 @@ export default function PublicSubmit() {
         <textarea name="description" className="input-field" rows={4} required placeholder="পানির উচ্চতা কত? কতজন আটকে আছেন? (Water level? How many trapped?)" style={{ resize: 'vertical' }}></textarea>
 
         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>ছবি / Photo (Optional)</label>
-        <input name="photo" type="file" accept="image/*" className="input-field" style={{ padding: '0.5rem' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+          <input 
+            ref={fileInputRef}
+            name="photo" 
+            type="file" 
+            accept=".jpg,.jpeg,.png,.heic,.heif,image/jpeg,image/png,image/heic,image/heif" 
+            className="input-field" 
+            style={{ padding: '0.5rem', flex: 1, marginBottom: 0 }} 
+            onChange={(e) => setHasFile(!!e.target.files?.[0])}
+          />
+          {hasFile && (
+            <button 
+              type="button" 
+              onClick={() => {
+                if (fileInputRef.current) {
+                  fileInputRef.current.value = '';
+                  setHasFile(false);
+                }
+              }} 
+              style={{ background: 'var(--critical)', color: 'white', border: 'none', padding: '0.5rem', borderRadius: '0.25rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              title="Remove Image"
+            >
+              <X size={20} />
+            </button>
+          )}
+        </div>
 
         <input type="hidden" name="language" value="bn" />
 
