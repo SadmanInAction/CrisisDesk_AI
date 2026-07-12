@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DATABASE_URL=file:./dev.db
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ADMIN_API_KEY=supersecretadmin
+    volumes:
+      - ./prisma/dev.db:/app/prisma/dev.db

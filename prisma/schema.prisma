@@ -1,0 +1,28 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Report {
+  id                String   @id @default(uuid())
+  name              String?
+  contact           String?
+  location          String
+  description       String
+  language          String   @default("unknown")
+  category          String   @default("other")
+  urgency           String   @default("low")
+  summary           String?
+  suggestedAction   String?
+  confidence        Float?
+  possibleDuplicate Boolean  @default(false)
+  matchedReportId   String?
+  status            String   @default("pending")
+  embedding         String?  // JSON stringified array of floats
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
