@@ -38,6 +38,16 @@ const swaggerOptions = {
         url: `http://localhost:${PORT}`,
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'API_KEY',
+          description: 'Enter the Admin API Key here',
+        },
+      },
+    },
   },
   apis: ['./src/routes/*.ts'],
 };
