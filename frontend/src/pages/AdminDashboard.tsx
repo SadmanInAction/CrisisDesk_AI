@@ -7,6 +7,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<any>(null);
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
   const authenticate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -98,6 +99,16 @@ export default function AdminDashboard() {
 
   return (
     <div className="animate-fade-in">
+      {/* Photo Modal */}
+      {selectedPhoto && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '2rem' }} onClick={() => setSelectedPhoto(null)}>
+          <div style={{ position: 'relative', maxWidth: '100%', maxHeight: '100%' }}>
+            <img src={selectedPhoto} alt="Emergency" style={{ maxWidth: '100%', maxHeight: '90vh', borderRadius: '0.5rem', objectFit: 'contain' }} />
+            <button onClick={() => setSelectedPhoto(null)} style={{ position: 'absolute', top: '-1rem', right: '-1rem', background: 'var(--critical)', color: 'white', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+          </div>
+        </div>
+      )}
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h2>Command Center</h2>
         <button onClick={() => { fetchReports(); authenticate(); }} className="btn" style={{ background: 'transparent', border: '1px solid var(--border-color)', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -149,9 +160,9 @@ export default function AdminDashboard() {
                   )}
                   {report.photoBase64 && (
                     <div style={{ marginTop: '0.5rem' }}>
-                      <a href={report.photoBase64} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', padding: '0.25rem 0.5rem', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '0.75rem', textDecoration: 'none', color: 'var(--text-primary)' }}>
+                      <button onClick={() => setSelectedPhoto(report.photoBase64)} style={{ display: 'inline-block', padding: '0.25rem 0.5rem', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '0.75rem', border: '1px solid var(--border-color)', color: 'var(--text-primary)', cursor: 'pointer' }}>
                         📸 View Photo
-                      </a>
+                      </button>
                     </div>
                   )}
                 </td>
