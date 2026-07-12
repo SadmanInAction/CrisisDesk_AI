@@ -98,6 +98,12 @@ export const submitReport = async (req: Request, res: Response) => {
     // Exclude embedding from response
     const { embedding: _, ...responseReport } = newReport;
 
+    // Emit real-time event
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('new_report', responseReport);
+    }
+
     return res.status(201).json(responseReport);
   } catch (error) {
     console.error('Submit Report Error:', error);

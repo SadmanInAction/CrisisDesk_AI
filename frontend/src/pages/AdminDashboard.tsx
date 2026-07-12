@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Lock, RefreshCw, Activity, AlertOctagon, CheckSquare } from 'lucide-react';
+import { io } from 'socket.io-client';
 
 export default function AdminDashboard() {
   const [apiKey, setApiKey] = useState(localStorage.getItem('adminKey') || '');
@@ -94,6 +95,21 @@ export default function AdminDashboard() {
     if (apiKey && !isAuthenticated) {
       authenticate();
     }
+  }, []);
+
+  // Socket.io Real-time Updates
+  useEffect(() => {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+    const socketUrl = apiUrl.replace(/\/api$/, '');
+    const socket = io(socketUrl);
+
+    socket.on('new_report', (newReport) => {
+      setReports(prev => [newReport, ...prev]);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   if (!isAuthenticated) {
