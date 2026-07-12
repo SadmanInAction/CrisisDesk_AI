@@ -12,6 +12,7 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 RUN npx prisma generate
+RUN DATABASE_URL="file:./dev.db" npx prisma db push
 RUN npm run build
 
 EXPOSE 3000
