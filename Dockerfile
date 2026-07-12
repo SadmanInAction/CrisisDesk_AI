@@ -5,6 +5,8 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
+RUN apk add --no-cache openssl openssl-dev libc6-compat
+
 RUN npm install --legacy-peer-deps
 
 COPY . .
@@ -14,4 +16,4 @@ RUN npm run build
 
 EXPOSE 3000
 
-CMD ["npx", "ts-node-dev", "src/index.ts"]
+CMD ["node", "dist/index.js"]
