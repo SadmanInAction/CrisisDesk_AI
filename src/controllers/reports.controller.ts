@@ -2,6 +2,12 @@ import { Request, Response } from 'express';
 import { prisma } from '../services/db.service';
 import { classifyReport, generateEmbedding, cosineSimilarity } from '../services/ai.service';
 import { createReportSchema, updateReportStatusSchema } from '../schemas/report.schema';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL || '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+);
 
 export const submitReport = async (req: Request, res: Response) => {
   try {
@@ -18,6 +24,30 @@ export const submitReport = async (req: Request, res: Response) => {
 
     // AI Classification
     const aiResult = await classifyReport(description, location, language, photoBase64);
+
+    let photoUrl = null;
+    if (photoBase64) {
+      try {
+        const base64Data = photoBase64.replace(/^data:image\/\w+;base64,/, '');
+        const buffer = Buffer.from(base64Data, 'base64');
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`;
+        
+        const { data, error } = await supabase.storage
+          .from('crisis-photos')
+          .upload(fileName, buffer, {
+            contentType: 'image/jpeg',
+          });
+          
+        if (error) {
+          console.error("Supabase Upload Error:", error);
+        } else {
+          const { data: publicUrlData } = supabase.storage.from('crisis-photos').getPublicUrl(fileName);
+          photoUrl = publicUrlData.publicUrl;
+        }
+      } catch (err) {
+        console.error("Image processing/upload failed:", err);
+      }
+    }
 
     // AI Embedding for Duplicate Detection
     const embedding = await generateEmbedding(description);
@@ -60,7 +90,7 @@ export const submitReport = async (req: Request, res: Response) => {
         confidence: aiResult.confidence,
         possibleDuplicate,
         matchedReportId,
-        photoBase64: photoBase64 || null,
+        photoUrl: photoUrl || null,
         embedding: embedding.length > 0 ? JSON.stringify(embedding) : null,
       },
     });

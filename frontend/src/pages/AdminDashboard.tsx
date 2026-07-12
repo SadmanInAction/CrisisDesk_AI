@@ -8,6 +8,28 @@ export default function AdminDashboard() {
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+
+  const sortedReports = [...reports];
+  if (sortConfig !== null) {
+    sortedReports.sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === 'asc' ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  }
+
+  const requestSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
 
   const authenticate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -140,14 +162,20 @@ export default function AdminDashboard() {
             <tr style={{ color: 'var(--text-secondary)', borderBottom: '1px solid var(--border-color)' }}>
               <th style={{ padding: '1rem' }}>ID</th>
               <th style={{ padding: '1rem' }}>Location</th>
-              <th style={{ padding: '1rem' }}>Category</th>
-              <th style={{ padding: '1rem' }}>Urgency</th>
-              <th style={{ padding: '1rem' }}>Status</th>
+              <th style={{ padding: '1rem', cursor: 'pointer' }} onClick={() => requestSort('category')}>
+                Category {sortConfig?.key === 'category' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
+              </th>
+              <th style={{ padding: '1rem', cursor: 'pointer' }} onClick={() => requestSort('urgency')}>
+                Urgency {sortConfig?.key === 'urgency' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
+              </th>
+              <th style={{ padding: '1rem', cursor: 'pointer' }} onClick={() => requestSort('status')}>
+                Status {sortConfig?.key === 'status' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
+              </th>
               <th style={{ padding: '1rem' }}>Action</th>
             </tr>
           </thead>
           <tbody>
-            {reports.map((report: any) => (
+            {sortedReports.map((report: any) => (
               <tr key={report.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                 <td style={{ padding: '1rem', fontFamily: 'monospace', fontSize: '0.875rem' }}>{report.id.split('-')[0]}...</td>
                 <td style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)' }}>
@@ -158,9 +186,9 @@ export default function AdminDashboard() {
                   ) : (
                     report.location
                   )}
-                  {report.photoBase64 && (
+                  {report.photoUrl && (
                     <div style={{ marginTop: '0.5rem' }}>
-                      <button onClick={() => setSelectedPhoto(report.photoBase64)} style={{ display: 'inline-block', padding: '0.25rem 0.5rem', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '0.75rem', border: '1px solid var(--border-color)', color: 'var(--text-primary)', cursor: 'pointer' }}>
+                      <button onClick={() => setSelectedPhoto(report.photoUrl)} style={{ display: 'inline-block', padding: '0.25rem 0.5rem', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '0.75rem', border: '1px solid var(--border-color)', color: 'var(--text-primary)', cursor: 'pointer' }}>
                         📸 View Photo
                       </button>
                     </div>

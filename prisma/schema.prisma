@@ -1,6 +1,7 @@
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
@@ -22,7 +23,7 @@ model Report {
   possibleDuplicate Boolean  @default(false)
   matchedReportId   String?
   status            String   @default("pending")
-  photoBase64       String?  // Store base64 representation of image
+  photoUrl          String?  // Store supabase public url
   embedding         String?  // JSON stringified array of floats
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
