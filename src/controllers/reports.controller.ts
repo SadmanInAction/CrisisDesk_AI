@@ -14,10 +14,10 @@ export const submitReport = async (req: Request, res: Response) => {
       });
     }
 
-    const { name, contact, location, description, language } = validatedData.data;
+    const { name, contact, location, description, language, photoBase64 } = validatedData.data;
 
     // AI Classification
-    const aiResult = await classifyReport(description, location, language);
+    const aiResult = await classifyReport(description, location, language, photoBase64);
 
     // AI Embedding for Duplicate Detection
     const embedding = await generateEmbedding(description);
@@ -60,6 +60,7 @@ export const submitReport = async (req: Request, res: Response) => {
         confidence: aiResult.confidence,
         possibleDuplicate,
         matchedReportId,
+        photoBase64: photoBase64 || null,
         embedding: embedding.length > 0 ? JSON.stringify(embedding) : null,
       },
     });

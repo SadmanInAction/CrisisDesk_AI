@@ -14,6 +14,20 @@ export default function PublicSubmit() {
     const payload = Object.fromEntries(formData.entries());
 
     try {
+      const fileInput = e.currentTarget.querySelector('input[type="file"]') as HTMLInputElement;
+      const file = fileInput?.files?.[0];
+      
+      let photoBase64 = '';
+      if (file) {
+        photoBase64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = error => reject(error);
+        });
+        payload.photoBase64 = photoBase64;
+      }
+
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
       const res = await fetch(`${apiUrl}/reports`, {
         method: 'POST',
@@ -49,6 +63,9 @@ export default function PublicSubmit() {
 
         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>বর্তমান অবস্থা / Describe Situation (Required)</label>
         <textarea name="description" className="input-field" rows={4} required placeholder="পানির উচ্চতা কত? কতজন আটকে আছেন? (Water level? How many trapped?)" style={{ resize: 'vertical' }}></textarea>
+
+        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>ছবি / Photo (Optional)</label>
+        <input name="photo" type="file" accept="image/*" className="input-field" style={{ padding: '0.5rem' }} />
 
         <input type="hidden" name="language" value="bn" />
 

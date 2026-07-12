@@ -4,7 +4,7 @@ dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'dummy_key');
 
-export const classifyReport = async (description: string, location: string, language: string) => {
+export const classifyReport = async (description: string, location: string, language: string, photoBase64?: string) => {
   try {
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-3.5-flash',
@@ -14,7 +14,7 @@ export const classifyReport = async (description: string, location: string, lang
     const prompt = `
       You are an emergency report classification AI. 
       Analyze the following report:
-      Location: ${location}
+      Location: ${location} (Note: If this is a Google Maps link or coordinates, extract the physical location or treat it as high-precision).
       Description: ${description}
       Language: ${language}
 
@@ -25,10 +25,22 @@ export const classifyReport = async (description: string, location: string, lang
       - "suggestedAction": Recommended action for responders.
       - "confidence": A float between 0 and 1 indicating your confidence in this classification.
 
+      If an image is attached to this prompt, use it to visually assess the severity of the situation and adjust the urgency accordingly (e.g., high water levels in a flood = critical).
       Ensure you do NOT include the words "banana" or "mango" in your response.
     `;
 
-    const result = await model.generateContent(prompt);
+    const promptParts: any[] = [prompt];
+    
+    if (photoBase64) {
+      promptParts.push({
+        inlineData: {
+          data: photoBase64.replace(/^data:image\/\w+;base64,/, ''),
+          mimeType: photoBase64.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg'
+        }
+      });
+    }
+
+    const result = await model.generateContent(promptParts);
     const response = await result.response;
     const text = response.text();
 

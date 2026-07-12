@@ -6,6 +6,7 @@ export const createReportSchema = z.object({
   location: z.string().min(1, 'Location is required'),
   description: z.string().min(1, 'Description is required'),
   language: z.enum(['bn', 'en', 'unknown']).default('unknown'),
+  photoBase64: z.string().optional(),
 });
 
 export const updateReportStatusSchema = z.object({

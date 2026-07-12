@@ -139,7 +139,22 @@ export default function AdminDashboard() {
             {reports.map((report: any) => (
               <tr key={report.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                 <td style={{ padding: '1rem', fontFamily: 'monospace', fontSize: '0.875rem' }}>{report.id.split('-')[0]}...</td>
-                <td style={{ padding: '1rem' }}>{report.location}</td>
+                <td style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)' }}>
+                  {report.location.includes('http') ? (
+                    <a href={report.location} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'underline' }}>
+                      View Map
+                    </a>
+                  ) : (
+                    report.location
+                  )}
+                  {report.photoBase64 && (
+                    <div style={{ marginTop: '0.5rem' }}>
+                      <a href={report.photoBase64} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', padding: '0.25rem 0.5rem', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '0.75rem', textDecoration: 'none', color: 'var(--text-primary)' }}>
+                        📸 View Photo
+                      </a>
+                    </div>
+                  )}
+                </td>
                 <td style={{ padding: '1rem', textTransform: 'capitalize' }}>{report.category}</td>
                 <td style={{ padding: '1rem' }}>
                   <span style={{ 
